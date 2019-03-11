@@ -1,0 +1,7 @@
+#Internal package file, do not edit.
+#Mon Mar 11 16:58:17 IST 2019
+0.baseType=DIRECTORY
+0.base=/Users/apple/Downloads/GoogleMapLocationIndicator/android/app/build/intermediates/merged_assets/debug/mergeDebugAssets/out
+0.path=ula.kml
+0.set=ASSET
+count=1
