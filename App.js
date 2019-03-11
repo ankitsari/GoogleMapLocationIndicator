@@ -1,16 +1,8 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
 import MapView, {Marker} from 'react-native-maps'
+import { PermissionsAndroid } from 'react-native';
 
-const instructions = Platform.select({
-    ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-    android:
-        'Double tap R on your keyboard to reload,\n' +
-        'Shake or press menu button for dev menu',
-});
-
-type Props = {};
-export default class App extends Component<Props> {
+export default class App extends Component {
     constructor(props) {
         super(props);
         // Don't call this.setState() here!
@@ -24,16 +16,15 @@ export default class App extends Component<Props> {
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        await requestLocationPermission()
         this.watchID = navigator.geolocation.watchPosition((position) => {
-            // Create the object to update this.state.mapRegion through the onRegionChange function
             let region = {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
                 latitudeDelta: 0.00922 * 1.5,
                 longitudeDelta: 0.00421 * 1.5
             }
-            //this.onRegionChange(region, region.latitude, region.longitude);
             this.setState({region: region})
         }, (error) => console.log(error));
     }
@@ -60,21 +51,23 @@ export default class App extends Component<Props> {
     }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    },
-    instructions: {
-        textAlign: 'center',
-        color: '#333333',
-        marginBottom: 5,
-    },
-});
+export async function requestLocationPermission()
+{
+    try {
+        const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+            {
+                'title': 'Google Maps',
+                'message': 'Google Maps App access to your location '
+            }
+        )
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log("You can use the location")
+        } else {
+            console.log("location permission denied")
+            alert("Location permission denied");
+        }
+    } catch (err) {
+        console.warn(err)
+    }
+}
